@@ -19,7 +19,10 @@ const client = new MongoClient(process.env.MONGO_DB_URI, {
   },
 });
 
-const jobCollection = client.db("hireloop_db").collection("jobs");
+const db = client.db("hireloop_db");
+const jobCollection = db.collection("jobs");
+const companyCollection = db.collection("companies");
+
 
 app.get("/", (req, res) => res.send("HireLoop server is running"));
 
@@ -48,6 +51,13 @@ app.post("/api/jobs", async (req, res) => {
     res.status(500).json({ error: "Failed to create job" });
   }
 });
+// Company releted Apis
+
+app.post('/api/companies',async(req,res)=>{
+  const company = req.body
+  const result = await companyCollection.insertOne(company)
+  res.send(result)
+})
 
 async function start() {
   try {
